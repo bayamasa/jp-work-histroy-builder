@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-from jb_workhistory.work_history.models import StandardWorkHistory, StarWorkHistory, _WorkHistoryBase
+from jp_tenshoku_docs_builder.work_history.models import StandardWorkHistory, StarWorkHistory, _WorkHistoryBase
 
 
 def load_yaml(path: str | Path, content_format: str = "standard") -> _WorkHistoryBase:

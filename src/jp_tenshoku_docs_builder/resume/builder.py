@@ -12,8 +12,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas as canvas_module
 
-from jb_workhistory.fonts import FontConfig, register_fonts
-from jb_workhistory.resume.models import HistoryEntry, Resume
+from jp_tenshoku_docs_builder.fonts import FontConfig, register_fonts
+from jp_tenshoku_docs_builder.resume.models import HistoryEntry, Resume
 
 # A4 dimensions in mm
 _PW = 210  # page width

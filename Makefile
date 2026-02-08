@@ -14,15 +14,15 @@ lint:
 
 # 職務経歴書（標準） - YAML=入力ファイル, OUTPUT=出力ファイル
 build-wh-standard:
-	uv run python -m jb_workhistory $(YAML) -o $(OUTPUT)
+	uv run python -m jp_tenshoku_docs_builder $(YAML) -o $(OUTPUT)
 
 # 職務経歴書（STAR法） - YAML=入力ファイル, OUTPUT=出力ファイル
 build-wh-star:
-	uv run python -m jb_workhistory $(YAML) -o $(OUTPUT) --format star
+	uv run python -m jp_tenshoku_docs_builder $(YAML) -o $(OUTPUT) --format star
 
 # 履歴書 - YAML=入力ファイル, OUTPUT=出力ファイル
 build-resume:
-	uv run python -m jb_workhistory $(YAML) -o $(OUTPUT) --type resume
+	uv run python -m jp_tenshoku_docs_builder $(YAML) -o $(OUTPUT) --type resume
 
 # サンプルPDF生成
 sample-wh-standard:
@@ -39,16 +39,16 @@ sample-resume:
 
 # Docker
 docker-build:
-	docker build -t jb-workhistory .
+	docker build -t jp-tenshoku-docs-builder .
 
 docker-run-wh-standard: docker-build
-	docker run --rm -v "$(PWD)":/work jb-workhistory /work/sample/work_history_standard.yaml -o /work/output/work-history-standard.pdf
+	docker run --rm -v "$(PWD)":/work jp-tenshoku-docs-builder /work/sample/work_history_standard.yaml -o /work/output/work-history-standard.pdf
 
 docker-run-wh-star: docker-build
-	docker run --rm -v "$(PWD)":/work jb-workhistory /work/sample/work_history_star.yaml -o /work/output/work-history-star.pdf --format star
+	docker run --rm -v "$(PWD)":/work jp-tenshoku-docs-builder /work/sample/work_history_star.yaml -o /work/output/work-history-star.pdf --format star
 
 docker-run-resume: docker-build
-	docker run --rm -v "$(PWD)":/work jb-workhistory /work/sample/resume.yaml -o /work/output/resume.pdf --type resume
+	docker run --rm -v "$(PWD)":/work jp-tenshoku-docs-builder /work/sample/resume.yaml -o /work/output/resume.pdf --type resume
 
 # クリーンアップ
 clean:

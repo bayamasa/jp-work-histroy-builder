@@ -1,5 +1,5 @@
 [project]
-name = "jb-workhistory"
+name = "jp-tenshoku-docs-builder"
 version = "0.1.0"
 description = "職務経歴書 PDF Generator - Generate Japanese work history PDFs from YAML"
 # readme = "README.md"
@@ -12,14 +12,14 @@ dependencies = [
 ]
 
 [project.scripts]
-jb-workhistory = "jb_workhistory.cli:main"
+jp-tenshoku-docs-builder = "jp_tenshoku_docs_builder.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/jb_workhistory"]
+packages = ["src/jp_tenshoku_docs_builder"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

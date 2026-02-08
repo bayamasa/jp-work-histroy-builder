@@ -1,12 +1,12 @@
-"""Tests for jb_workhistory.resume models and loader."""
+"""Tests for jp_tenshoku_docs_builder.resume models and loader."""
 
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
-from jb_workhistory.resume.loader import load_resume_yaml
-from jb_workhistory.resume.models import HistoryEntry, Resume
+from jp_tenshoku_docs_builder.resume.loader import load_resume_yaml
+from jp_tenshoku_docs_builder.resume.models import HistoryEntry, Resume
 
 
 class TestHistoryEntry:
