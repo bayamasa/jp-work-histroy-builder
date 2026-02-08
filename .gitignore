@@ -194,6 +194,15 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# Generated PDFs
+output.pdf
+*.pdf
+
+# Fonts (user-provided)
+fonts/*.ttf
+fonts/*.ttc
+fonts/*.otf
+
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data

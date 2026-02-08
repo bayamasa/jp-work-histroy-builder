@@ -1,0 +1,168 @@
+# 職務経歴書サンプルデータ
+
+date: "20xx年xx月xx日現在"
+name: "山田 太郎"
+
+summary: |
+  株式会社テクノシステムに入社後、約8年間金融業界を中心にシステム開発業務に従事してまいりました。
+  入社後3年間はPHP、Javaを中心としたWebアプリケーション開発を経験し、その後はプロジェクトリーダー
+  として要件定義から運用保守まで幅広いフェーズを担当してきました。直近では保険業界の営業支援
+  システム開発において、約15名規模のプロジェクトをリードし、顧客満足度の高いシステムを納品しました。
+
+highlights:
+  - "顧客へのヒアリングから要件定義、基本設計、詳細設計、開発までの一貫した経験"
+  - "PHP、Javaによるウェブアプリケーションの設計・開発"
+  - "約10名～15名規模のプロジェクトリーダー、サブリーダーを経験"
+  - "Oracle、SQL Server等のデータベース設計・チューニング経験"
+  - "金融業界（保険・証券）における業務知識"
+
+experience:
+  - company: "株式会社テクノシステム"
+    period: "20xx年xx月～現在"
+    business: "アプリケーション・ソフトウェアシステム開発"
+    capital: "5千万円（20xx年xx月）"
+    revenue: "3億5千万円（20xx年xx月）"
+    employees: "120人"
+    listing: "未上場"
+    employment_type: "正社員として勤務"
+    projects:
+      - period: "20xx年xx月～現在"
+        industry: "保険業界"
+        name: "営業支援システム開発"
+        overview: |
+          保険業界大手の営業業務の実績、予算、顧客などを
+          一元管理する営業支援システムの開発をプロジェクト提案から実施。
+          既存のExcel管理からWebシステムへの移行を実現。
+        phases: "要件定義、基本設計、詳細設計、実装、結合テスト、運用保守"
+        responsibilities:
+          - "クライアントへのヒアリング、要件定義書・仕様書作成"
+          - "営業支援システムの設計、開発、導入、テスト"
+          - "プロジェクトメンバーの進捗管理、タスク割り振り"
+          - "協力会社との調整、品質管理"
+        achievements:
+          - "導入後も顧客へのヒアリングを継続し、随時システムを改善。顧客満足度調査で90%以上を達成。"
+          - "既存のExcel管理と比較し、営業担当の事務作業時間を約40%削減。"
+        environment:
+          languages: ["PHP", "JavaScript"]
+          os: ["Linux（CentOS）"]
+          db: ["Oracle 12c"]
+          frameworks: ["Laravel", "jQuery"]
+          tools: ["Git", "Jenkins", "Redmine"]
+        team_size: "全15名"
+        role: "リーダー"
+
+      - period: "20xx年xx月～20xx年xx月"
+        industry: "証券業界"
+        name: "証券取引管理システム保守開発"
+        overview: |
+          証券会社の取引管理システムの保守開発。
+          法改正対応や機能追加を担当。
+        phases: "基本設計、詳細設計、実装、単体テスト、結合テスト"
+        responsibilities:
+          - "法改正に伴うシステム改修の設計・開発"
+          - "既存機能の不具合調査・修正"
+          - "後輩社員の技術指導"
+        achievements:
+          - "法改正対応を期限内に完了し、システム停止なく移行を完了。"
+          - "不具合の根本原因分析を徹底し、同種の障害再発率を50%低減。"
+        environment:
+          languages: ["Java", "SQL"]
+          os: ["AIX", "Windows Server"]
+          db: ["SQL Server 2016"]
+          frameworks: ["Spring Boot"]
+          tools: ["SVN", "Eclipse"]
+        team_size: "全10名"
+        role: "サブリーダー"
+
+      - period: "20xx年xx月～20xx年xx月"
+        industry: "保険業界"
+        name: "契約管理システム開発"
+        overview: |
+          保険会社の契約管理システムの新規開発。
+          契約情報の登録、変更、照会機能を実装。
+        phases: "詳細設計、実装、単体テスト、結合テスト"
+        responsibilities:
+          - "詳細設計書の作成"
+          - "契約情報管理モジュールの実装"
+          - "単体テスト・結合テストの実施"
+        achievements:
+          - "品質目標を達成し、本番リリース後の重大障害ゼロを実現。"
+        environment:
+          languages: ["PHP", "Java"]
+          os: ["AIX", "Windows"]
+          db: ["SQL Server", "Oracle"]
+        team_size: "全20名"
+        role: "メンバー"
+
+technical_skills:
+  - category: "OS"
+    items:
+      - name: "Windows"
+        period: "8年0カ月"
+        level: "環境設計・構築が可能"
+      - name: "Linux"
+        period: "5年0カ月"
+        level: "環境設計・構築が可能"
+      - name: "AIX"
+        period: "3年0カ月"
+        level: "基本的な操作が可能"
+  - category: "言語"
+    items:
+      - name: "PHP"
+        period: "6年0カ月"
+        level: "最適なコード記述と、指示、改修が可能"
+      - name: "Java"
+        period: "5年0カ月"
+        level: "最適なコード記述と、指示、改修が可能"
+      - name: "JavaScript"
+        period: "4年0カ月"
+        level: "基本的なコード記述が可能"
+      - name: "SQL"
+        period: "8年0カ月"
+        level: "複雑なクエリ記述・チューニングが可能"
+  - category: "DB"
+    items:
+      - name: "Oracle"
+        period: "5年0カ月"
+        level: "環境設計・構築・チューニングが可能"
+      - name: "SQL Server"
+        period: "4年0カ月"
+        level: "基本的な環境構築が可能"
+  - category: "FW"
+    items:
+      - name: "Laravel"
+        period: "3年0カ月"
+        level: "実務での開発経験あり"
+      - name: "Spring Boot"
+        period: "2年0カ月"
+        level: "実務での開発経験あり"
+      - name: "jQuery"
+        period: "4年0カ月"
+        level: "実務での開発経験あり"
+
+qualifications:
+  - name: "普通自動車第一種運転免許"
+    date: "20xx年xx月取得"
+  - name: "基本情報技術者試験"
+    date: "20xx年xx月合格"
+  - name: "応用情報技術者試験"
+    date: "20xx年xx月合格"
+  - name: "Oracle Master Bronze"
+    date: "20xx年xx月取得"
+
+self_pr:
+  - title: "常に改善を心掛けた設計力"
+    content: |
+      保険業界での営業支援システムの開発では、忙しい営業担当が社外からでも使いやすいような
+      設計を心掛けてきました。導入後も定期的にヒアリングを行い、UIの改善やレスポンス速度の
+      向上など、継続的な改善を実施しています。特にモバイル対応では、外出先からの入力を
+      効率化するUI設計により、営業担当の業務効率を大幅に向上させました。
+
+  - title: "円滑にプロジェクトを進行させるマネジメント力"
+    content: |
+      自社のプロジェクトメンバーだけでなく顧客先の関係者など、約10名～15名規模の
+      プロジェクトを進めた経験があります。スケジュール管理はもちろん、メンバー個々の
+      強みを活かしたタスク割り振りや、週次でのリスク管理ミーティングの実施により、
+      担当したプロジェクトでは納期遅延ゼロを達成しました。また、新人教育にも
+      積極的に取り組み、技術勉強会の主催やペアプログラミングを通じてチーム全体の
+      スキル底上げに貢献しています。
