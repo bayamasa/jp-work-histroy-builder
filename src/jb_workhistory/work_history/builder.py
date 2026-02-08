@@ -19,7 +19,7 @@ from reportlab.platypus import (
 )
 
 from jb_workhistory.fonts import register_fonts
-from jb_workhistory.models import (
+from jb_workhistory.work_history.models import (
     SideCompany,
     SideProject,
     StandardCompany,
@@ -30,7 +30,7 @@ from jb_workhistory.models import (
     _ProjectBase,
     _WorkHistoryBase,
 )
-from jb_workhistory.styles import (
+from jb_workhistory.work_history.styles import (
     MARGIN_BOTTOM,
     MARGIN_LEFT,
     MARGIN_RIGHT,

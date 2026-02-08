@@ -6,14 +6,14 @@ import argparse
 import sys
 from pathlib import Path
 
-from jb_workhistory.builder import build_pdf
-from jb_workhistory.loader import load_yaml
+from jb_workhistory.work_history.builder import build_pdf
+from jb_workhistory.work_history.loader import load_yaml
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         prog="jb_workhistory",
-        description="職務経歴書 PDF Generator - Generate Japanese work history PDFs from YAML",
+        description="職務経歴書・履歴書 PDF Generator - Generate Japanese CV/Resume PDFs from YAML",
     )
     parser.add_argument(
         "input",
@@ -33,11 +33,18 @@ def main(argv: list[str] | None = None) -> None:
         help="Directory containing Japanese font files",
     )
     parser.add_argument(
+        "--type",
+        choices=["work-history", "resume"],
+        default="work-history",
+        dest="doc_type",
+        help="Document type: work-history (職務経歴書) or resume (履歴書) (default: work-history)",
+    )
+    parser.add_argument(
         "--format",
         choices=["standard", "star"],
         default="standard",
         dest="content_format",
-        help="プロジェクト内容の表示形式 (default: standard)",
+        help="プロジェクト内容の表示形式 (default: standard, work-history only)",
     )
 
     args = parser.parse_args(argv)
@@ -46,6 +53,13 @@ def main(argv: list[str] | None = None) -> None:
         print(f"Error: Input file not found: {args.input}", file=sys.stderr)
         sys.exit(1)
 
+    if args.doc_type == "resume":
+        _build_resume(args)
+    else:
+        _build_work_history(args)
+
+
+def _build_work_history(args: argparse.Namespace) -> None:
     try:
         data = load_yaml(args.input, content_format=args.content_format)
     except Exception as e:
@@ -57,6 +71,24 @@ def main(argv: list[str] | None = None) -> None:
 
     try:
         result = build_pdf(data, args.output, args.font_dir, content_format=args.content_format)
+        print(f"Generated: {result}")
+    except Exception as e:
+        print(f"Error: Failed to generate PDF: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def _build_resume(args: argparse.Namespace) -> None:
+    from jb_workhistory.resume.builder import build_resume_pdf
+    from jb_workhistory.resume.loader import load_resume_yaml
+
+    try:
+        data = load_resume_yaml(args.input)
+    except Exception as e:
+        print(f"Error: YAML validation failed for resume: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    try:
+        result = build_resume_pdf(data, args.output, args.font_dir)
         print(f"Generated: {result}")
     except Exception as e:
         print(f"Error: Failed to generate PDF: {e}", file=sys.stderr)

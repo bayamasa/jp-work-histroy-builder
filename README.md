@@ -1,6 +1,6 @@
-# jb-workhistory - 職務経歴書 PDF Generator
+# jb-workhistory - 職務経歴書・履歴書 PDF Generator
 
-YAMLファイルから日本語の職務経歴書PDFを生成するCLIツールです。
+YAMLファイルから日本語の職務経歴書・履歴書PDFを生成するCLIツールです。
 
 ## 必要環境
 
@@ -15,15 +15,36 @@ uv sync
 
 ## 使い方
 
-```bash
-# 標準フォーマットで生成
-uv run python -m jb_workhistory sample/standard.yaml -o output.pdf
+### Make（サンプルPDF生成）
 
-# STAR法フォーマットで生成
-uv run python -m jb_workhistory sample/star.yaml -o output.pdf --format star
+```bash
+make sample-wh-standard   # 職務経歴書（標準） → work-history-standard.pdf
+make sample-wh-star        # 職務経歴書（STAR法） → work-history-star.pdf
+make sample-resume         # 履歴書 → resume.pdf
+```
+
+### Make（任意のYAMLを指定）
+
+```bash
+make build-wh-standard YAML=my_data.yaml OUTPUT=my_output.pdf
+make build-wh-star YAML=my_data.yaml OUTPUT=my_output.pdf
+make build-resume YAML=my_resume.yaml OUTPUT=my_resume.pdf
+```
+
+### CLI 直接実行
+
+```bash
+# 職務経歴書（標準）
+uv run python -m jb_workhistory sample/work_history_standard.yaml -o work-history-standard.pdf
+
+# 職務経歴書（STAR法）
+uv run python -m jb_workhistory sample/work_history_star.yaml -o work-history-star.pdf --format star
+
+# 履歴書
+uv run python -m jb_workhistory sample/resume.yaml -o resume.pdf --type resume
 
 # フォントディレクトリを指定
-uv run python -m jb_workhistory sample/standard.yaml -o output.pdf --font-dir ./fonts
+uv run python -m jb_workhistory sample/work_history_standard.yaml -o work-history-standard.pdf --font-dir ./fonts
 ```
 
 ### CLIオプション
@@ -33,11 +54,12 @@ uv run python -m jb_workhistory sample/standard.yaml -o output.pdf --font-dir ./
 | `input` | 入力YAMLファイルパス（必須） | - |
 | `-o, --output` | 出力PDFファイルパス | `output.pdf` |
 | `--font-dir` | 日本語フォントファイルのディレクトリ | なし（自動検索） |
-| `--format` | 表示形式 (`standard` / `star`) | `standard` |
+| `--type` | 文書タイプ (`work-history` / `resume`) | `work-history` |
+| `--format` | 表示形式 (`standard` / `star`、職務経歴書のみ) | `standard` |
 
 ## YAMLデータ構造
 
-### 共通セクション
+### 職務経歴書
 
 | セクション | 説明 |
 |---|---|
@@ -51,21 +73,36 @@ uv run python -m jb_workhistory sample/standard.yaml -o output.pdf --font-dir ./
 | `qualifications` | 資格 |
 | `self_pr` | 自己PR |
 
-### 表示形式
+#### 表示形式
 
 - **standard** - 概要・担当フェーズ・業務内容・実績をそのまま記載する標準形式
 - **star** - Situation / Task / Action / Result で構造化して記載するSTAR法形式
 
-### PDFセクション配置順
+### 履歴書
 
-1. ヘッダー（タイトル・日付・氏名）
-2. 職務要約
-3. 活かせる経験・知識・技術
-4. 職務経歴
-5. 副業・その他経歴
-6. テクニカルスキル
-7. 資格
-8. 自己PR
+| セクション | 説明 |
+|---|---|
+| `date` | 作成日（必須） |
+| `name_kana` | ふりがな（必須） |
+| `name` | 氏名（必須） |
+| `birth_day` | 生年月日（必須） |
+| `gender` | 性別 |
+| `cell_phone` | 携帯電話番号 |
+| `email` | メールアドレス |
+| `address_kana` / `address` / `address_zip` | 現住所（ふりがな・住所・郵便番号） |
+| `tel` / `fax` | 電話・FAX |
+| `address_kana2` / `address2` / `address_zip2` | 連絡先 |
+| `tel2` / `fax2` | 連絡先電話・FAX |
+| `education` | 学歴（year, month, value のリスト） |
+| `experience` | 職歴（year, month, value のリスト） |
+| `licences` | 免許・資格（year, month, value のリスト） |
+| `commuting_time` | 通勤時間 |
+| `dependents` | 扶養家族数 |
+| `spouse` | 配偶者の有無 |
+| `supporting_spouse` | 配偶者の扶養義務 |
+| `hobby` | 趣味・特技 |
+| `motivation` | 志望動機 |
+| `request` | 本人希望記入欄 |
 
 サンプルYAMLは `sample/` ディレクトリを参照してください。
 
@@ -90,18 +127,28 @@ uv run python -m jb_workhistory sample/standard.yaml -o output.pdf --font-dir ./
 
 ```
 ├── src/jb_workhistory/
-│   ├── models.py    # Pydantic データモデル
-│   ├── loader.py    # YAML読み込み・バリデーション
-│   ├── builder.py   # PDF生成 (ReportLab Platypus)
-│   ├── styles.py    # PDF スタイル定義
-│   ├── fonts.py     # フォント検索・登録
-│   └── cli.py       # CLIエントリポイント
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── cli.py            # 共通CLIエントリポイント
+│   ├── fonts.py           # 共通フォント検索・登録
+│   ├── work_history/      # 職務経歴書
+│   │   ├── models.py      # Pydantic データモデル
+│   │   ├── loader.py      # YAML読み込み・バリデーション
+│   │   ├── builder.py     # PDF生成 (ReportLab Platypus)
+│   │   └── styles.py      # PDF スタイル定義
+│   └── resume/            # 履歴書
+│       ├── models.py      # Pydantic データモデル
+│       ├── loader.py      # YAML読み込み・バリデーション
+│       └── builder.py     # PDF生成 (ReportLab Canvas API)
 ├── sample/
-│   ├── standard.yaml  # 標準フォーマットのサンプル
-│   └── star.yaml      # STAR法フォーマットのサンプル
-├── fonts/             # 日本語フォント配置先
+│   ├── work_history_standard.yaml  # 職務経歴書 標準フォーマットのサンプル
+│   ├── work_history_star.yaml     # 職務経歴書 STAR法フォーマットのサンプル
+│   └── resume.yaml        # 履歴書サンプル
+├── Makefile               # ビルド・テスト用コマンド
+├── fonts/                 # 日本語フォント配置先
 ├── tests/
-│   └── test_models.py
+│   ├── test_models.py
+│   └── test_resume_models.py
 └── pyproject.toml
 ```
 
@@ -113,11 +160,14 @@ Python や uv をインストールせずに Docker 経由で実行できます�
 # ビルド
 docker build -t jb-workhistory .
 
-# 実行（カレントディレクトリの YAML を入力、PDF を出力）
-docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/standard.yaml -o /work/output.pdf
+# 職務経歴書
+docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/work_history_standard.yaml -o /work/work-history-standard.pdf
 
 # STAR法フォーマットで生成
-docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/star.yaml -o /work/output.pdf --format star
+docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/work_history_star.yaml -o /work/work-history-star.pdf --format star
+
+# 履歴書
+docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/resume.yaml -o /work/resume.pdf --type resume
 ```
 
 > **Note:** `fonts/` ディレクトリに IPAex フォントが配置された状態でイメージをビルドしてください。コンテナ内にフォントがコピーされるため `--font-dir` の指定は不要です。

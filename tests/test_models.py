@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from jb_workhistory.loader import load_yaml
-from jb_workhistory.models import (
+from jb_workhistory.work_history.loader import load_yaml
+from jb_workhistory.work_history.models import (
     Company,
     Environment,
     Project,
@@ -257,9 +257,9 @@ class TestSideExperienceInWorkHistory:
 
 class TestLoadYaml:
     def test_load_standard_sample(self):
-        sample_path = Path(__file__).parent.parent / "sample" / "standard.yaml"
+        sample_path = Path(__file__).parent.parent / "sample" / "work_history_standard.yaml"
         if not sample_path.exists():
-            pytest.skip("sample/standard.yaml not found")
+            pytest.skip("sample/work_history_standard.yaml not found")
         data = load_yaml(sample_path)
         assert data.name == "山田 太郎"
         assert len(data.experience) == 1
@@ -269,9 +269,9 @@ class TestLoadYaml:
         assert len(data.self_pr) >= 1
 
     def test_load_star_sample(self):
-        sample_path = Path(__file__).parent.parent / "sample" / "star.yaml"
+        sample_path = Path(__file__).parent.parent / "sample" / "work_history_star.yaml"
         if not sample_path.exists():
-            pytest.skip("sample/star.yaml not found")
+            pytest.skip("sample/work_history_star.yaml not found")
         data = load_yaml(sample_path, content_format="star")
         assert data.name == "山田 太郎"
         assert len(data.experience) == 1
@@ -279,17 +279,17 @@ class TestLoadYaml:
 
     def test_star_yaml_fails_with_standard_format(self):
         """STAR形式YAMLを標準フォーマットで読むとバリデーションエラー."""
-        sample_path = Path(__file__).parent.parent / "sample" / "star.yaml"
+        sample_path = Path(__file__).parent.parent / "sample" / "work_history_star.yaml"
         if not sample_path.exists():
-            pytest.skip("sample/star.yaml not found")
+            pytest.skip("sample/work_history_star.yaml not found")
         with pytest.raises(ValidationError):
             load_yaml(sample_path, content_format="standard")
 
     def test_standard_yaml_fails_with_star_format(self):
         """標準形式YAMLをSTARフォーマットで読むとバリデーションエラー."""
-        sample_path = Path(__file__).parent.parent / "sample" / "standard.yaml"
+        sample_path = Path(__file__).parent.parent / "sample" / "work_history_standard.yaml"
         if not sample_path.exists():
-            pytest.skip("sample/standard.yaml not found")
+            pytest.skip("sample/work_history_standard.yaml not found")
         with pytest.raises(ValidationError):
             load_yaml(sample_path, content_format="star")
 
