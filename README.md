@@ -105,6 +105,23 @@ uv run python -m jpcv sample/standard.yaml -o output.pdf --font-dir ./fonts
 └── pyproject.toml
 ```
 
+## Docker
+
+Python や uv をインストールせずに Docker 経由で実行できます。
+
+```bash
+# ビルド
+docker build -t jpcv .
+
+# 実行（カレントディレクトリの YAML を入力、PDF を出力）
+docker run --rm -v "$(pwd)":/work jpcv /work/sample/standard.yaml -o /work/output.pdf
+
+# STAR法フォーマットで生成
+docker run --rm -v "$(pwd)":/work jpcv /work/sample/star.yaml -o /work/output.pdf --format star
+```
+
+> **Note:** `fonts/` ディレクトリに IPAex フォントが配置された状態でイメージをビルドしてください。コンテナ内にフォントがコピーされるため `--font-dir` の指定は不要です。
+
 ## テスト
 
 ```bash
