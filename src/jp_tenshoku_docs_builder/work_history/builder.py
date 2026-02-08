@@ -18,8 +18,8 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from jb_workhistory.fonts import register_fonts
-from jb_workhistory.work_history.models import (
+from jp_tenshoku_docs_builder.fonts import register_fonts
+from jp_tenshoku_docs_builder.work_history.models import (
     SideCompany,
     SideProject,
     StandardCompany,
@@ -30,7 +30,7 @@ from jb_workhistory.work_history.models import (
     _ProjectBase,
     _WorkHistoryBase,
 )
-from jb_workhistory.work_history.styles import (
+from jp_tenshoku_docs_builder.work_history.styles import (
     MARGIN_BOTTOM,
     MARGIN_LEFT,
     MARGIN_RIGHT,

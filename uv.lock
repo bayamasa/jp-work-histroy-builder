@@ -103,7 +103,7 @@ wheels = [
 ]
 
 [[package]]
-name = "jb-workhistory"
+name = "jp-tenshoku-docs-builder"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

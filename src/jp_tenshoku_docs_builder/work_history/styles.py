@@ -6,7 +6,7 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 
-from jb_workhistory.fonts import FontConfig
+from jp_tenshoku_docs_builder.fonts import FontConfig
 
 # Page settings (A4)
 PAGE_WIDTH = 210 * mm

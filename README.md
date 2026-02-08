@@ -1,4 +1,4 @@
-# jb-workhistory - 職務経歴書・履歴書 PDF Generator
+# jp-tenshoku-docs-builder - 職務経歴書・履歴書 PDF Generator
 
 YAMLファイルから日本語の職務経歴書・履歴書PDFを生成するCLIツールです。
 
@@ -18,9 +18,9 @@ uv sync
 ### Make（サンプルPDF生成）
 
 ```bash
-make sample-wh-standard   # 職務経歴書（標準） → work-history-standard.pdf
-make sample-wh-star        # 職務経歴書（STAR法） → work-history-star.pdf
-make sample-resume         # 履歴書 → resume.pdf
+make sample-wh-standard   # 職務経歴書（標準） → output/work-history-standard.pdf
+make sample-wh-star        # 職務経歴書（STAR法） → output/work-history-star.pdf
+make sample-resume         # 履歴書 → output/resume.pdf
 ```
 
 ### Make（任意のYAMLを指定）
@@ -35,16 +35,16 @@ make build-resume YAML=my_resume.yaml OUTPUT=my_resume.pdf
 
 ```bash
 # 職務経歴書（標準）
-uv run python -m jb_workhistory sample/work_history_standard.yaml -o work-history-standard.pdf
+uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o output/work-history-standard.pdf
 
 # 職務経歴書（STAR法）
-uv run python -m jb_workhistory sample/work_history_star.yaml -o work-history-star.pdf --format star
+uv run python -m jp_tenshoku_docs_builder sample/work_history_star.yaml -o output/work-history-star.pdf --format star
 
 # 履歴書
-uv run python -m jb_workhistory sample/resume.yaml -o resume.pdf --type resume
+uv run python -m jp_tenshoku_docs_builder sample/resume.yaml -o output/resume.pdf --type resume
 
 # フォントディレクトリを指定
-uv run python -m jb_workhistory sample/work_history_standard.yaml -o work-history-standard.pdf --font-dir ./fonts
+uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o output/work-history-standard.pdf --font-dir ./fonts
 ```
 
 ### CLIオプション
@@ -52,7 +52,7 @@ uv run python -m jb_workhistory sample/work_history_standard.yaml -o work-histor
 | オプション | 説明 | デフォルト |
 |---|---|---|
 | `input` | 入力YAMLファイルパス（必須） | - |
-| `-o, --output` | 出力PDFファイルパス | `output.pdf` |
+| `-o, --output` | 出力PDFファイルパス | `output/output.pdf` |
 | `--font-dir` | 日本語フォントファイルのディレクトリ | なし（自動検索） |
 | `--type` | 文書タイプ (`work-history` / `resume`) | `work-history` |
 | `--format` | 表示形式 (`standard` / `star`、職務経歴書のみ) | `standard` |
@@ -126,7 +126,7 @@ uv run python -m jb_workhistory sample/work_history_standard.yaml -o work-histor
 ## プロジェクト構成
 
 ```
-├── src/jb_workhistory/
+├── src/jp_tenshoku_docs_builder/
 │   ├── __init__.py
 │   ├── __main__.py
 │   ├── cli.py            # 共通CLIエントリポイント
@@ -145,6 +145,7 @@ uv run python -m jb_workhistory sample/work_history_standard.yaml -o work-histor
 │   ├── work_history_star.yaml     # 職務経歴書 STAR法フォーマットのサンプル
 │   └── resume.yaml        # 履歴書サンプル
 ├── Makefile               # ビルド・テスト用コマンド
+├── output/                # 生成PDF出力先（.gitignore）
 ├── fonts/                 # 日本語フォント配置先
 ├── tests/
 │   ├── test_models.py
@@ -158,16 +159,16 @@ Python や uv をインストールせずに Docker 経由で実行できます�
 
 ```bash
 # ビルド
-docker build -t jb-workhistory .
+docker build -t jp-tenshoku-docs-builder .
 
 # 職務経歴書
-docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/work_history_standard.yaml -o /work/work-history-standard.pdf
+docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/work_history_standard.yaml -o /work/output/work-history-standard.pdf
 
 # STAR法フォーマットで生成
-docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/work_history_star.yaml -o /work/work-history-star.pdf --format star
+docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/work_history_star.yaml -o /work/output/work-history-star.pdf --format star
 
 # 履歴書
-docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/resume.yaml -o /work/resume.pdf --type resume
+docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/resume.yaml -o /work/output/resume.pdf --type resume
 ```
 
 > **Note:** `fonts/` ディレクトリに IPAex フォントが配置された状態でイメージをビルドしてください。コンテナ内にフォントがコピーされるため `--font-dir` の指定は不要です。

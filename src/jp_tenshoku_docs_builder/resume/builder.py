@@ -12,8 +12,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas as canvas_module
 
-from jb_workhistory.fonts import FontConfig, register_fonts
-from jb_workhistory.resume.models import HistoryEntry, Resume
+from jp_tenshoku_docs_builder.fonts import FontConfig, register_fonts
+from jp_tenshoku_docs_builder.resume.models import HistoryEntry, Resume
 
 # A4 dimensions in mm
 _PW = 210  # page width
@@ -188,8 +188,9 @@ def _draw_page1(c: canvas_module.Canvas, data: Resume, fonts: FontConfig) -> Non
     c.drawString(_x(2), _y(235), "ふりがな")
     c.drawString(_x(30), _y(235), data.name_kana)
     c.drawString(_x(2), _y(228), "氏　　名")
+    # 氏名データ: 行 y=233〜218 (15mm), 14ptフォントで垂直中央
     c.setFont(fonts.mincho, _FS_TITLE)
-    c.drawString(_x(30), _y(226), data.name)
+    c.drawString(_x(30), _y(224), data.name)
 
     # ── テキスト: 生年月日・性別 ──
     c.setFont(fonts.mincho, _FS_NORMAL)

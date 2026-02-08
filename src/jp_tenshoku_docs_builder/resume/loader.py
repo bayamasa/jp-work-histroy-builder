@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-from jb_workhistory.resume.models import Resume
+from jp_tenshoku_docs_builder.resume.models import Resume
 
 
 def load_resume_yaml(path: str | Path) -> Resume:

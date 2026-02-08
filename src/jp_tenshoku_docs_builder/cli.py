@@ -1,4 +1,4 @@
-"""CLI entry point for jb_workhistory."""
+"""CLI entry point for jp_tenshoku_docs_builder."""
 
 from __future__ import annotations
 
@@ -6,13 +6,13 @@ import argparse
 import sys
 from pathlib import Path
 
-from jb_workhistory.work_history.builder import build_pdf
-from jb_workhistory.work_history.loader import load_yaml
+from jp_tenshoku_docs_builder.work_history.builder import build_pdf
+from jp_tenshoku_docs_builder.work_history.loader import load_yaml
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
-        prog="jb_workhistory",
+        prog="jp_tenshoku_docs_builder",
         description="職務経歴書・履歴書 PDF Generator - Generate Japanese CV/Resume PDFs from YAML",
     )
     parser.add_argument(
@@ -23,8 +23,8 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument(
         "-o", "--output",
         type=Path,
-        default=Path("output.pdf"),
-        help="Output PDF file path (default: output.pdf)",
+        default=Path("output/output.pdf"),
+        help="Output PDF file path (default: output/output.pdf)",
     )
     parser.add_argument(
         "--font-dir",
@@ -53,6 +53,8 @@ def main(argv: list[str] | None = None) -> None:
         print(f"Error: Input file not found: {args.input}", file=sys.stderr)
         sys.exit(1)
 
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+
     if args.doc_type == "resume":
         _build_resume(args)
     else:
@@ -78,8 +80,8 @@ def _build_work_history(args: argparse.Namespace) -> None:
 
 
 def _build_resume(args: argparse.Namespace) -> None:
-    from jb_workhistory.resume.builder import build_resume_pdf
-    from jb_workhistory.resume.loader import load_resume_yaml
+    from jp_tenshoku_docs_builder.resume.builder import build_resume_pdf
+    from jp_tenshoku_docs_builder.resume.loader import load_resume_yaml
 
     try:
         data = load_resume_yaml(args.input)

@@ -1,12 +1,12 @@
-"""Tests for jb_workhistory models and loader."""
+"""Tests for jp_tenshoku_docs_builder models and loader."""
 
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
-from jb_workhistory.work_history.loader import load_yaml
-from jb_workhistory.work_history.models import (
+from jp_tenshoku_docs_builder.work_history.loader import load_yaml
+from jp_tenshoku_docs_builder.work_history.models import (
     Company,
     Environment,
     Project,
