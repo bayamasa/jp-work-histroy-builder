@@ -1,4 +1,4 @@
-# jpcv - 職務経歴書 PDF Generator
+# jb-workhistory - 職務経歴書 PDF Generator
 
 YAMLファイルから日本語の職務経歴書PDFを生成するCLIツールです。
 
@@ -17,13 +17,13 @@ uv sync
 
 ```bash
 # 標準フォーマットで生成
-uv run python -m jpcv sample/standard.yaml -o output.pdf
+uv run python -m jb_workhistory sample/standard.yaml -o output.pdf
 
 # STAR法フォーマットで生成
-uv run python -m jpcv sample/star.yaml -o output.pdf --format star
+uv run python -m jb_workhistory sample/star.yaml -o output.pdf --format star
 
 # フォントディレクトリを指定
-uv run python -m jpcv sample/standard.yaml -o output.pdf --font-dir ./fonts
+uv run python -m jb_workhistory sample/standard.yaml -o output.pdf --font-dir ./fonts
 ```
 
 ### CLIオプション
@@ -89,7 +89,7 @@ uv run python -m jpcv sample/standard.yaml -o output.pdf --font-dir ./fonts
 ## プロジェクト構成
 
 ```
-├── src/jpcv/
+├── src/jb_workhistory/
 │   ├── models.py    # Pydantic データモデル
 │   ├── loader.py    # YAML読み込み・バリデーション
 │   ├── builder.py   # PDF生成 (ReportLab Platypus)
@@ -111,13 +111,13 @@ Python や uv をインストールせずに Docker 経由で実行できます�
 
 ```bash
 # ビルド
-docker build -t jpcv .
+docker build -t jb-workhistory .
 
 # 実行（カレントディレクトリの YAML を入力、PDF を出力）
-docker run --rm -v "$(pwd)":/work jpcv /work/sample/standard.yaml -o /work/output.pdf
+docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/standard.yaml -o /work/output.pdf
 
 # STAR法フォーマットで生成
-docker run --rm -v "$(pwd)":/work jpcv /work/sample/star.yaml -o /work/output.pdf --format star
+docker run --rm -v "$(pwd)":/work jb-workhistory /work/sample/star.yaml -o /work/output.pdf --format star
 ```
 
 > **Note:** `fonts/` ディレクトリに IPAex フォントが配置された状態でイメージをビルドしてください。コンテナ内にフォントがコピーされるため `--font-dir` の指定は不要です。

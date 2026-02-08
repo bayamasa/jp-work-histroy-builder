@@ -23,5 +23,5 @@
 ## 使い方
 
 ```bash
-python -m jpcv sample/data.yaml -o output.pdf --font-dir ./fonts
+python -m jb_workhistory sample/data.yaml -o output.pdf --font-dir ./fonts
 ```

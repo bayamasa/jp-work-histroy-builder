@@ -1,4 +1,4 @@
-"""CLI entry point for jpcv."""
+"""CLI entry point for jb_workhistory."""
 
 from __future__ import annotations
 
@@ -6,13 +6,13 @@ import argparse
 import sys
 from pathlib import Path
 
-from jpcv.builder import build_pdf
-from jpcv.loader import load_yaml
+from jb_workhistory.builder import build_pdf
+from jb_workhistory.loader import load_yaml
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
-        prog="jpcv",
+        prog="jb_workhistory",
         description="職務経歴書 PDF Generator - Generate Japanese work history PDFs from YAML",
     )
     parser.add_argument(

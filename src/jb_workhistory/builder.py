@@ -18,8 +18,8 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from jpcv.fonts import register_fonts
-from jpcv.models import (
+from jb_workhistory.fonts import register_fonts
+from jb_workhistory.models import (
     SideCompany,
     SideProject,
     StandardCompany,
@@ -30,7 +30,7 @@ from jpcv.models import (
     _ProjectBase,
     _WorkHistoryBase,
 )
-from jpcv.styles import (
+from jb_workhistory.styles import (
     MARGIN_BOTTOM,
     MARGIN_LEFT,
     MARGIN_RIGHT,

@@ -11,4 +11,4 @@ COPY src/ src/
 COPY fonts/ fonts/
 COPY sample/ sample/
 
-ENTRYPOINT ["uv", "run", "python", "-m", "jpcv"]
+ENTRYPOINT ["uv", "run", "python", "-m", "jb_workhistory"]

@@ -1,12 +1,12 @@
-"""Tests for jpcv models and loader."""
+"""Tests for jb_workhistory models and loader."""
 
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
-from jpcv.loader import load_yaml
-from jpcv.models import (
+from jb_workhistory.loader import load_yaml
+from jb_workhistory.models import (
     Company,
     Environment,
     Project,

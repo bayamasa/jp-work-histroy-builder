@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-from jpcv.models import StandardWorkHistory, StarWorkHistory, _WorkHistoryBase
+from jb_workhistory.models import StandardWorkHistory, StarWorkHistory, _WorkHistoryBase
 
 
 def load_yaml(path: str | Path, content_format: str = "standard") -> _WorkHistoryBase:
