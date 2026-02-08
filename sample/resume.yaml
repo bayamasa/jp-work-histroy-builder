@@ -1,27 +1,8 @@
 # 履歴書サンプルデータ
+# 個人情報（氏名・住所等）は credential.yaml に分離しています。
+# 使用時は -c オプションで credential.yaml を指定してください。
 
 date: "20xx年xx月xx日現在"
-name_kana: "やまだ　たろう"
-name: "山田　太郎"
-birth_day: "19xx年xx月xx日 (満 xx 歳)"
-gender: "男"
-cell_phone: "090-1234-5678"
-email: "taro.yamada@example.com"
-photo: ""
-
-# 現住所
-address_kana: "とうきょうとしぶやくじんぐうまえ"
-address: "東京都渋谷区神宮前1-2-3 マンション101"
-address_zip: "150-0001"
-tel: "03-1234-5678"
-fax: ""
-
-# 連絡先（現住所以外に連絡を希望する場合のみ記入）
-address_kana2: ""
-address2: ""
-address_zip2: ""
-tel2: ""
-fax2: ""
 
 # 学歴
 education:

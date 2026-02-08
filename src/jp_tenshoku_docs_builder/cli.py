@@ -40,6 +40,12 @@ def main(argv: list[str] | None = None) -> None:
         help="Document type: work-history (職務経歴書) or resume (履歴書) (default: work-history)",
     )
     parser.add_argument(
+        "-c", "--credential",
+        type=Path,
+        default=None,
+        help="Path to credential YAML file containing personal info (name, address, etc.)",
+    )
+    parser.add_argument(
         "--format",
         choices=["standard", "star"],
         default="standard",
@@ -53,6 +59,13 @@ def main(argv: list[str] | None = None) -> None:
         print(f"Error: Input file not found: {args.input}", file=sys.stderr)
         sys.exit(1)
 
+    if args.credential is not None and not args.credential.exists():
+        print(
+            f"Error: Credential file not found: {args.credential}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     args.output.parent.mkdir(parents=True, exist_ok=True)
 
     if args.doc_type == "resume":
@@ -63,7 +76,7 @@ def main(argv: list[str] | None = None) -> None:
 
 def _build_work_history(args: argparse.Namespace) -> None:
     try:
-        data = load_yaml(args.input, content_format=args.content_format)
+        data = load_yaml(args.input, content_format=args.content_format, credential_path=args.credential)
     except Exception as e:
         print(
             f"Error: YAML validation failed for '{args.content_format}' format: {e}",
@@ -83,8 +96,15 @@ def _build_resume(args: argparse.Namespace) -> None:
     from jp_tenshoku_docs_builder.resume.builder import build_resume_pdf
     from jp_tenshoku_docs_builder.resume.loader import load_resume_yaml
 
+    if args.credential is None:
+        print(
+            "Error: --credential (-c) is required for resume type.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     try:
-        data = load_resume_yaml(args.input)
+        data = load_resume_yaml(args.input, credential_path=args.credential)
     except Exception as e:
         print(f"Error: YAML validation failed for resume: {e}", file=sys.stderr)
         sys.exit(1)
