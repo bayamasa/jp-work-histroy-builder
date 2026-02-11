@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+import yaml
 from pydantic import ValidationError
 
 from jp_tenshoku_docs_builder.resume.loader import load_resume_yaml
@@ -110,11 +111,13 @@ class TestResume:
 
 
 class TestLoadResumeYaml:
-    def test_load_sample(self):
-        sample_path = Path(__file__).parent.parent / "sample" / "resume.yaml"
-        if not sample_path.exists():
-            pytest.skip("sample/resume.yaml not found")
-        data = load_resume_yaml(sample_path)
+    def test_load_sample_with_credential(self):
+        sample_dir = Path(__file__).parent.parent / "sample"
+        resume_path = sample_dir / "resume.yaml"
+        credential_path = sample_dir / "credential.yaml"
+        if not resume_path.exists() or not credential_path.exists():
+            pytest.skip("sample/resume.yaml or sample/credential.yaml not found")
+        data = load_resume_yaml(resume_path, credential_path=credential_path)
         assert data.name == "山田　太郎"
         assert data.name_kana == "やまだ　たろう"
         assert len(data.education) == 4
@@ -123,4 +126,62 @@ class TestLoadResumeYaml:
 
     def test_load_nonexistent(self):
         with pytest.raises(FileNotFoundError):
-            load_resume_yaml("/nonexistent/path.yaml")
+            load_resume_yaml("/nonexistent/path.yaml", credential_path="/nonexistent/cred.yaml")
+
+    def test_credential_merge(self, tmp_path):
+        resume_data = {
+            "date": "2024年1月1日現在",
+            "education": [],
+            "hobby": "テスト",
+        }
+        credential_data = {
+            "name_kana": "てすと たろう",
+            "name": "テスト 太郎",
+            "birth_day": "2000年1月1日 (満 24 歳)",
+        }
+        resume_file = tmp_path / "resume.yaml"
+        credential_file = tmp_path / "credential.yaml"
+        resume_file.write_text(yaml.dump(resume_data, allow_unicode=True))
+        credential_file.write_text(yaml.dump(credential_data, allow_unicode=True))
+
+        result = load_resume_yaml(resume_file, credential_path=credential_file)
+        assert result.date == "2024年1月1日現在"
+        assert result.name == "テスト 太郎"
+        assert result.name_kana == "てすと たろう"
+        assert result.birth_day == "2000年1月1日 (満 24 歳)"
+        assert result.hobby == "テスト"
+
+    def test_credential_overrides_resume(self, tmp_path):
+        resume_data = {
+            "date": "2024年1月1日現在",
+            "name_kana": "ふるい なまえ",
+            "name": "古い 名前",
+            "birth_day": "1990年",
+        }
+        credential_data = {
+            "name_kana": "あたらしい なまえ",
+            "name": "新しい 名前",
+            "birth_day": "2000年",
+        }
+        resume_file = tmp_path / "resume.yaml"
+        credential_file = tmp_path / "credential.yaml"
+        resume_file.write_text(yaml.dump(resume_data, allow_unicode=True))
+        credential_file.write_text(yaml.dump(credential_data, allow_unicode=True))
+
+        result = load_resume_yaml(resume_file, credential_path=credential_file)
+        assert result.name == "新しい 名前"
+        assert result.name_kana == "あたらしい なまえ"
+        assert result.birth_day == "2000年"
+
+    def test_credential_nonexistent(self, tmp_path):
+        resume_data = {
+            "date": "2024年",
+            "name_kana": "やまだ",
+            "name": "山田",
+            "birth_day": "1990年",
+        }
+        resume_file = tmp_path / "resume.yaml"
+        resume_file.write_text(yaml.dump(resume_data, allow_unicode=True))
+
+        with pytest.raises(FileNotFoundError):
+            load_resume_yaml(resume_file, credential_path="/nonexistent/cred.yaml")

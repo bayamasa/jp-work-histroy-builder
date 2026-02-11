@@ -26,25 +26,25 @@ make sample-resume         # 履歴書 → output/resume.pdf
 ### Make（任意のYAMLを指定）
 
 ```bash
-make build-wh-standard YAML=my_data.yaml OUTPUT=my_output.pdf
-make build-wh-star YAML=my_data.yaml OUTPUT=my_output.pdf
-make build-resume YAML=my_resume.yaml OUTPUT=my_resume.pdf
+make build-wh-standard YAML=my_data.yaml CRED=.personal/credential.yaml OUTPUT=my_output.pdf
+make build-wh-star YAML=my_data.yaml CRED=.personal/credential.yaml OUTPUT=my_output.pdf
+make build-resume YAML=my_resume.yaml CRED=.personal/credential.yaml OUTPUT=my_resume.pdf
 ```
 
 ### CLI 直接実行
 
 ```bash
 # 職務経歴書（標準）
-uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o output/work-history-standard.pdf
+uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -c sample/credential.yaml -o output/work-history-standard.pdf
 
 # 職務経歴書（STAR法）
-uv run python -m jp_tenshoku_docs_builder sample/work_history_star.yaml -o output/work-history-star.pdf --format star
+uv run python -m jp_tenshoku_docs_builder sample/work_history_star.yaml -c sample/credential.yaml -o output/work-history-star.pdf --format star
 
 # 履歴書
-uv run python -m jp_tenshoku_docs_builder sample/resume.yaml -o output/resume.pdf --type resume
+uv run python -m jp_tenshoku_docs_builder sample/resume.yaml -c sample/credential.yaml -o output/resume.pdf --type resume
 
 # フォントディレクトリを指定
-uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o output/work-history-standard.pdf --font-dir ./fonts
+uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -c sample/credential.yaml -o output/work-history-standard.pdf --font-dir ./fonts
 ```
 
 ### CLIオプション
@@ -52,6 +52,7 @@ uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o o
 | オプション | 説明 | デフォルト |
 |---|---|---|
 | `input` | 入力YAMLファイルパス（必須） | - |
+| `-c, --credential` | 個人情報YAMLファイルパス（必須） | - |
 | `-o, --output` | 出力PDFファイルパス | `output/output.pdf` |
 | `--font-dir` | 日本語フォントファイルのディレクトリ | なし（自動検索） |
 | `--type` | 文書タイプ (`work-history` / `resume`) | `work-history` |
@@ -59,12 +60,33 @@ uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o o
 
 ## YAMLデータ構造
 
+個人情報（氏名・住所・電話番号等）は `credential.yaml` に分離しています。
+`-c` オプションで指定すると、メインのYAMLにマージされます（credential側の値が優先）。
+
+### credential.yaml（個人情報）
+
+| フィールド | 説明 |
+|---|---|
+| `name` | 氏名 |
+| `name_kana` | ふりがな（履歴書用） |
+| `birth_day` | 生年月日（履歴書用） |
+| `gender` | 性別 |
+| `cell_phone` | 携帯電話番号 |
+| `email` | メールアドレス |
+| `address_kana` / `address` / `address_zip` | 現住所 |
+| `tel` / `fax` | 電話・FAX |
+| `address_kana2` / `address2` / `address_zip2` | 連絡先 |
+| `tel2` / `fax2` | 連絡先電話・FAX |
+
+実際の個人情報は `.personal/credential.yaml` に配置し、Git管理外としてください。
+`sample/credential.yaml` にサンプルがあります。
+
 ### 職務経歴書
 
 | セクション | 説明 |
 |---|---|
 | `date` | 作成日（必須） |
-| `name` | 氏名（必須） |
+| `name` | 氏名（必須、credential.yamlから供給可） |
 | `summary` | 職務要約 |
 | `highlights` | 活かせる経験・知識・技術 |
 | `experience` | 職務経歴 |
@@ -83,16 +105,6 @@ uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o o
 | セクション | 説明 |
 |---|---|
 | `date` | 作成日（必須） |
-| `name_kana` | ふりがな（必須） |
-| `name` | 氏名（必須） |
-| `birth_day` | 生年月日（必須） |
-| `gender` | 性別 |
-| `cell_phone` | 携帯電話番号 |
-| `email` | メールアドレス |
-| `address_kana` / `address` / `address_zip` | 現住所（ふりがな・住所・郵便番号） |
-| `tel` / `fax` | 電話・FAX |
-| `address_kana2` / `address2` / `address_zip2` | 連絡先 |
-| `tel2` / `fax2` | 連絡先電話・FAX |
 | `education` | 学歴（year, month, value のリスト） |
 | `experience` | 職歴（year, month, value のリスト） |
 | `licences` | 免許・資格（year, month, value のリスト） |
@@ -103,6 +115,8 @@ uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o o
 | `hobby` | 趣味・特技 |
 | `motivation` | 志望動機 |
 | `request` | 本人希望記入欄 |
+
+個人情報フィールド（`name_kana`, `name`, `birth_day`, `gender`, `cell_phone`, `email`, `address_*`, `tel`, `fax` 等）は credential.yaml から供給されます。
 
 サンプルYAMLは `sample/` ディレクトリを参照してください。
 
@@ -141,9 +155,11 @@ uv run python -m jp_tenshoku_docs_builder sample/work_history_standard.yaml -o o
 │       ├── loader.py      # YAML読み込み・バリデーション
 │       └── builder.py     # PDF生成 (ReportLab Canvas API)
 ├── sample/
+│   ├── credential.yaml             # 個人情報サンプル
 │   ├── work_history_standard.yaml  # 職務経歴書 標準フォーマットのサンプル
-│   ├── work_history_star.yaml     # 職務経歴書 STAR法フォーマットのサンプル
-│   └── resume.yaml        # 履歴書サンプル
+│   ├── work_history_star.yaml      # 職務経歴書 STAR法フォーマットのサンプル
+│   └── resume.yaml                 # 履歴書サンプル（キャリア情報のみ）
+├── .personal/             # 個人データ格納先（中身は.gitignore）
 ├── Makefile               # ビルド・テスト用コマンド
 ├── output/                # 生成PDF出力先（.gitignore）
 ├── fonts/                 # 日本語フォント配置先
@@ -162,13 +178,13 @@ Python や uv をインストールせずに Docker 経由で実行できます�
 docker build -t jp-tenshoku-docs-builder .
 
 # 職務経歴書
-docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/work_history_standard.yaml -o /work/output/work-history-standard.pdf
+docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/work_history_standard.yaml -c /work/sample/credential.yaml -o /work/output/work-history-standard.pdf
 
 # STAR法フォーマットで生成
-docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/work_history_star.yaml -o /work/output/work-history-star.pdf --format star
+docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/work_history_star.yaml -c /work/sample/credential.yaml -o /work/output/work-history-star.pdf --format star
 
 # 履歴書
-docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/resume.yaml -o /work/output/resume.pdf --type resume
+docker run --rm -v "$(pwd)":/work jp-tenshoku-docs-builder /work/sample/resume.yaml -c /work/sample/credential.yaml -o /work/output/resume.pdf --type resume
 ```
 
 > **Note:** `fonts/` ディレクトリに IPAex フォントが配置された状態でイメージをビルドしてください。コンテナ内にフォントがコピーされるため `--font-dir` の指定は不要です。

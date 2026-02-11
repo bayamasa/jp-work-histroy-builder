@@ -194,6 +194,10 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# Personal credential data
+.personal/*
+!.personal/.gitkeep
+
 # Generated PDFs
 output/
 
