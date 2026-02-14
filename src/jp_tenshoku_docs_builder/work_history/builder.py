@@ -218,6 +218,7 @@ def _build_experience(
     data: _WorkHistoryBase,
     styles: dict[str, ParagraphStyle],
     content_format: str = "standard",
+    split_in_row: int = 1,
 ) -> list:
     """Build 職務経歴 section with company and project tables."""
     if not data.experience:
@@ -226,7 +227,7 @@ def _build_experience(
     elements.append(Paragraph("■職務経歴", styles["section_header"]))
 
     for company in data.experience:
-        elements.extend(_build_company_table(company, styles, content_format))
+        elements.extend(_build_company_table(company, styles, content_format, split_in_row))
         elements.append(Spacer(1, 3 * mm))
 
     return elements
@@ -236,6 +237,7 @@ def _build_company_table(
     company: _CompanyBase,
     styles: dict[str, ParagraphStyle],
     content_format: str = "standard",
+    split_in_row: int = 1,
 ) -> list:
     """Build a single company's table (header + info + projects)."""
     elements = []
@@ -290,17 +292,21 @@ def _build_company_table(
     ]))
     elements.append(info_table)
 
-    # Project rows
+    # Project rows — each project as a separate table for better page splitting
+    # splitInRow=1: プロジェクト行をページ途中で分割し余白を最小化
+    # splitInRow=0: プロジェクトをページ跨ぎせず丸ごと次ページへ送る
     if company.projects:
-        # Column headers
         col_headers = [
             Paragraph("<b>期間</b>", styles["cell_gothic"]),
             Paragraph("<b>内容</b>", styles["cell_gothic"]),
             Paragraph("<b>開発環境</b>", styles["cell_gothic"]),
             Paragraph("<b>規模</b>", styles["cell_gothic"]),
         ]
-
-        table_data = [col_headers]
+        project_style = TableStyle([
+            *_GRID_STYLE,
+            ("BACKGROUND", (0, 0), (-1, 0), colors.Color(0.95, 0.95, 0.95)),
+            ("ALIGN", (0, 0), (-1, 0), "CENTER"),
+        ])
 
         for project in company.projects:
             period_cell = _build_period_cell(project, styles)
@@ -310,19 +316,15 @@ def _build_company_table(
                 content_cell = _build_project_content(project, styles)
             env_cell = _build_env_cell(project, styles)
             team_cell = _build_team_cell(project, styles)
-            table_data.append([period_cell, content_cell, env_cell, team_cell])
 
-        project_table = Table(
-            table_data,
-            colWidths=[COL_PERIOD, COL_CONTENT, COL_ENV, COL_TEAM],
-        )
-        project_style = TableStyle([
-            *_GRID_STYLE,
-            ("BACKGROUND", (0, 0), (-1, 0), colors.Color(0.95, 0.95, 0.95)),
-            ("ALIGN", (0, 0), (-1, 0), "CENTER"),
-        ])
-        project_table.setStyle(project_style)
-        elements.append(project_table)
+            project_table = Table(
+                [col_headers, [period_cell, content_cell, env_cell, team_cell]],
+                colWidths=[COL_PERIOD, COL_CONTENT, COL_ENV, COL_TEAM],
+                repeatRows=1,
+                splitInRow=split_in_row,
+            )
+            project_table.setStyle(project_style)
+            elements.append(project_table)
 
     # Other activities section
     if company.other_activities:
@@ -550,13 +552,14 @@ def _build_elements(
     data: _WorkHistoryBase,
     styles: dict[str, ParagraphStyle],
     content_format: str = "standard",
+    split_in_row: int = 1,
 ) -> list:
     """Build all flowable elements for the PDF."""
     elements = []
     elements.extend(_build_header(data, styles))
     elements.extend(_build_summary(data, styles))
     elements.extend(_build_highlights(data, styles))
-    elements.extend(_build_experience(data, styles, content_format))
+    elements.extend(_build_experience(data, styles, content_format, split_in_row))
     elements.extend(_build_side_experience(data, styles))
     elements.extend(_build_technical_skills(data, styles))
     elements.extend(_build_qualifications(data, styles))
@@ -570,6 +573,7 @@ def build_pdf(
     output: str | Path,
     font_dir: str | Path | None = None,
     content_format: str = "standard",
+    split_in_row: int = 1,
 ) -> Path:
     """Generate the 職務経歴書 PDF.
 
@@ -578,6 +582,7 @@ def build_pdf(
         output: Output PDF file path.
         font_dir: Optional directory containing Japanese fonts.
         content_format: Project content format ("standard" or "star").
+        split_in_row: 1=行途中でページ分割, 0=プロジェクト丸ごと次ページ.
 
     Returns:
         Path to the generated PDF.
@@ -587,7 +592,7 @@ def build_pdf(
     styles = build_styles(fonts)
 
     # Collect all flowable elements
-    elements = _build_elements(data, styles, content_format)
+    elements = _build_elements(data, styles, content_format, split_in_row)
 
     # Build the document with page numbers
     page_num_handler = _PageNumCanvas(fonts.mincho)
@@ -657,7 +662,7 @@ def build_pdf(
     doc2.addPageTemplates([page_template2])
 
     # Rebuild elements (Platypus consumes them)
-    elements2 = _build_elements(data, styles, content_format)
+    elements2 = _build_elements(data, styles, content_format, split_in_row)
 
     doc2.build(elements2)
 
