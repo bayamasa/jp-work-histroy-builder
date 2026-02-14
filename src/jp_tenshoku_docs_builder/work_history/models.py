@@ -12,6 +12,9 @@ class Environment(BaseModel):
     os: list[str] = []
     db: list[str] = []
     frameworks: list[str] = []
+    aws: list[str] = []
+    azure: list[str] = []
+    gcp: list[str] = []
     tools: list[str] = []
     other: list[str] = []
 
@@ -25,6 +28,7 @@ class _ProjectBase(BaseModel):
     industry: str = ""
     name: str
     environment: Environment = Environment()
+    abbreviate_env: bool = False
     team_size: str = ""
     role: str = ""
 
@@ -89,6 +93,7 @@ class SideProject(BaseModel):
     name: str
     description: str = ""
     environment: Environment = Environment()
+    abbreviate_env: bool = False
     team_size: str = ""
     role: str = ""
 

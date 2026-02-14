@@ -1,40 +1,23 @@
 # /resume スキル
 
-対話形式で職務経歴書・履歴書のYAMLデータを作成し、PDFを生成するスキル。
+対話形式で履歴書のYAMLデータを作成し、PDFを生成するスキル。
 
 ## トリガー
 
-- 「職務経歴書を作成」「履歴書を作成」「resume作成」
+- 「履歴書を作成」「resume作成」
 - `/resume`
 
 ## ワークフロー
 
-### Step 1: 文書タイプの確認
-
-`AskUserQuestion` を使ってユーザーに作成する文書タイプを確認する。
-
-**質問1: 文書タイプ**
-
-- **職務経歴書** (work-history)
-- **履歴書** (resume)
-- **両方**
-
-**質問2: 職務経歴書の形式** (職務経歴書を含む場合のみ)
-
-- **標準形式** (standard) - overview / phases / responsibilities / achievements
-- **STAR法形式** (star) - situation / task / action / result
-
-2つの質問は `AskUserQuestion` の `questions` パラメータで同時に提示する（職務経歴書を含まない場合は質問1のみ）。
-
-### Step 2: credential.yaml の確認
+### Step 1: credential.yaml の確認
 
 `AskUserQuestion` でユーザーに `.personal/credential.yaml` の準備状況を確認する。ファイルの存在チェックは行わない。
 
 **質問: credential.yaml は準備できていますか？**
 
-- **ある** → Step 3 へ進む
+- **ある** → Step 2 へ進む
 - **ない（今作成する）** → 作成手順を案内して **スキルを中断** する
-- **あとで作成する** → credential.yaml なしで Step 3 へ進む（PDF生成時にエラーになる旨を伝える）
+- **あとで作成する** → credential.yaml なしで Step 2 へ進む（PDF生成時にエラーになる旨を伝える）
 
 **「ない（今作成する）」の場合の案内**:
 
@@ -54,11 +37,12 @@ credential.yaml は `sample/credential.yaml` をテンプレートとしてコ�
 ※ sample/credential.yaml にサンプル値が記載されているので参考にしてください。
 ```
 
-**重要**: credential.yaml には氏名・住所・電話番号等の個人情報が含まれる。セキュリティ上、対話形式での聞き取りは **絶対に行わない**。ユーザー自身がファイルを直接編集する運用とする。
+**重要**: credential.yaml には氏名・住所・電話番号等の個人情報が含まれる。セキュリティ上、対話形式での聞き取り、ファイルの読み取り、存在チェックは **絶対に行わない**。ユーザー自身がファイルを直接編集する運用とする。
 
-### Step 3: 対話形式でのデータ聞き取り
+### Step 2: 対話形式でのデータ聞き取り
 
-選択された文書タイプに応じて、`AskUserQuestion` を活用してYAMLデータの各項目を聞き取る。
+`AskUserQuestion` を活用して履歴書YAMLデータの各項目を聞き取る。
+各項目の詳細スキーマは `references/yaml-schema.md` を参照。
 
 #### 聞き取りの原則
 
@@ -69,9 +53,7 @@ credential.yaml は `sample/credential.yaml` をテンプレートとしてコ�
 - **確認を挟む**: 逆算・推定した内容は `AskUserQuestion` でユーザーに確認を取ってから次へ進む
 - **既存ファイルの活用**: `.personal/` に既存のYAMLファイルがある場合はそれを読み込み、修正ベースで進める
 
-#### 履歴書の聞き取りフロー
-
-各項目の詳細スキーマは `references/yaml-schema.md` の「履歴書」セクションを参照。
+#### 聞き取りフロー
 
 **Round 1**: 作成日
 
@@ -105,93 +87,43 @@ credential.yaml は `sample/credential.yaml` をテンプレートとしてコ�
   - 志望動機 (`motivation`)
   - 本人希望記入欄 (`request`)
 
-#### 職務経歴書の聞き取りフロー
-
-各項目の詳細スキーマは `references/yaml-schema.md` の「職務経歴書」セクションを参照。
-
-**Round 1**: 作成日 (`date`)
-
-**Round 2**: 職務要約 + ハイライト
-
-- `AskUserQuestion` で以下を同時に聞く:
-  - 職務要約 (`summary`) - これまでの経歴の概要
-  - ハイライト (`highlights`) - 主な実績・強みを箇条書き
-
-**Round 3**: 職務経歴 (`experience`)
-
-- 会社ごとに聞き取り。WebソースのURL提示があれば活用する
-- 会社情報 (company, period, business, capital, revenue, employees, listing, employment_type)
-- プロジェクト: 選択された形式（標準/STAR法）に応じた項目を聞く
-
-**Round 4**: 副業・その他経歴 (`side_experience`)
-
-- 該当する場合のみ
-
-**Round 5**: テクニカルスキル (`technical_skills`)
-
-- カテゴリ別 (OS, 言語, DB, FW等)
-
-**Round 6**: 資格 + 自己PR（まとめて聞く）
-
-- 資格 (`qualifications`)
-- 自己PR (`self_pr`) - タイトルと本文のペア
-
-### Step 4: YAML 確認・保存
+### Step 3: YAML 確認・保存
 
 聞き取ったデータの完全なYAMLをコードブロックでユーザーに表示し、`AskUserQuestion` で「保存する」「修正あり」を確認する。
 
-確認後、`.personal/` ディレクトリに保存する:
+確認後、`.personal/resume.yaml` に保存する。
 
-- 職務経歴書: `.personal/work_history.yaml`
-- 履歴書: `.personal/resume.yaml`
-
-### Step 5: PDF 生成・表示
+### Step 4: PDF 生成・表示
 
 Makefileのターゲットを使ってPDFを生成し、`open` コマンドで表示する。
-
-**職務経歴書 (標準)**:
-
-```bash
-make build-wh-standard YAML=.personal/work_history.yaml CRED=.personal/credential.yaml OUTPUT=output/work-history.pdf
-```
-
-**職務経歴書 (STAR法)**:
-
-```bash
-make build-wh-star YAML=.personal/work_history.yaml CRED=.personal/credential.yaml OUTPUT=output/work-history.pdf
-```
-
-**履歴書**:
 
 ```bash
 make build-resume YAML=.personal/resume.yaml CRED=.personal/credential.yaml OUTPUT=output/resume.pdf
 ```
 
-生成後、`open output/<file>.pdf` でPDFビューアを開く。
+生成後、`open output/resume.pdf` でPDFビューアを開く。
 
-### Step 6: 確認・修正ループ
+### Step 5: 確認・修正ループ
 
 PDF表示後、ユーザーのフィードバックに応じて対応する:
 
 - **問題なし** → 完了
-- **YAMLデータの修正** → `.personal/` のYAMLを編集して再生成
+- **YAMLデータの修正** → `.personal/resume.yaml` を編集して再生成
 - **credential.yaml の修正** → ユーザーが直接編集後、再生成コマンドのみ実行
-- **レイアウト・表示の問題** → `src/jp_tenshoku_docs_builder/resume/builder.py` 等のビルダーコードを修正して再生成
+- **レイアウト・表示の問題** → `src/jp_tenshoku_docs_builder/resume/builder.py` のビルダーコードを修正して再生成
 
 ## ファイル構成
 
 ```text
 .personal/
   credential.yaml    # 個人情報（手動編集、対話で聞き取り禁止）
-  work_history.yaml  # 職務経歴書データ（スキルで生成）
   resume.yaml        # 履歴書データ（スキルで生成）
 output/
-  work-history.pdf   # 生成された職務経歴書PDF
   resume.pdf         # 生成された履歴書PDF
 ```
 
 ## リファレンス
 
 - YAMLスキーマ詳細: `references/yaml-schema.md`
-- サンプルデータ: `sample/` ディレクトリ
-- Pydanticモデル: `src/jp_tenshoku_docs_builder/work_history/models.py`, `src/jp_tenshoku_docs_builder/resume/models.py`
+- サンプルデータ: `sample/resume.yaml`
+- Pydanticモデル: `src/jp_tenshoku_docs_builder/resume/models.py`

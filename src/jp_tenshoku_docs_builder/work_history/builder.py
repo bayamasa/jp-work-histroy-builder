@@ -109,8 +109,10 @@ def _build_highlights(data: _WorkHistoryBase, styles: dict[str, ParagraphStyle])
     return elements
 
 
-def _build_env_cell(project: _ProjectBase, styles: dict[str, ParagraphStyle]) -> Paragraph:
+def _build_env_cell(project: _ProjectBase | SideProject, styles: dict[str, ParagraphStyle]) -> Paragraph:
     """Build the environment column content for a project row."""
+    if project.abbreviate_env:
+        return Paragraph("同環境のため省略", styles["cell"])
     parts = []
     env = project.environment
     categories = [
@@ -118,6 +120,9 @@ def _build_env_cell(project: _ProjectBase, styles: dict[str, ParagraphStyle]) ->
         ("OS", env.os),
         ("DB", env.db),
         ("FW", env.frameworks),
+        ("AWS", env.aws),
+        ("Azure", env.azure),
+        ("GCP", env.gcp),
         ("ツール", env.tools),
         ("その他", env.other),
     ]
