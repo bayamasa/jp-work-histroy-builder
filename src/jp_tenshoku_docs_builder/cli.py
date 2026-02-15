@@ -52,6 +52,12 @@ def main(argv: list[str] | None = None) -> None:
         dest="content_format",
         help="プロジェクト内容の表示形式 (default: standard, work-history only)",
     )
+    parser.add_argument(
+        "--no-split-row",
+        action="store_true",
+        default=False,
+        help="プロジェクト行のページ途中分割を無効化（丸ごと次ページへ送る）",
+    )
 
     args = parser.parse_args(argv)
 
@@ -85,7 +91,8 @@ def _build_work_history(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     try:
-        result = build_pdf(data, args.output, args.font_dir, content_format=args.content_format)
+        split_in_row = 0 if args.no_split_row else 1
+        result = build_pdf(data, args.output, args.font_dir, content_format=args.content_format, split_in_row=split_in_row)
         print(f"Generated: {result}")
     except Exception as e:
         print(f"Error: Failed to generate PDF: {e}", file=sys.stderr)
